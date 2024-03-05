@@ -1,0 +1,103 @@
+.suelo{
+    background-image: url("./suelo.jpg");
+    background-size: cover;
+}
+.obstaculo{
+    background-image: url("./dinamita.jpg");
+    background-size: cover;
+}
+.end{
+    background-image: url("./diamond.jpg");
+    background-size: cover;
+}
+.start {
+    background-image: url("start.png"), 
+                      url("suelo.jpg");
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+.flecha {
+    background-image: url("suelo.jpg"), url("flecha.png");
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+
+.flecha-1-1 {
+    background-image: url("flecha-1-1.png"),url("suelo.jpg");
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+
+.flecha-10 {
+    background-image: url("flecha-10.png"),url("suelo.jpg");
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+
+.flecha-11 {
+    background-image: url("flecha-11.png"),url("suelo.jpg");
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+
+.flecha0-1 {
+    background-image:  url("flecha0-1.png"),url("suelo.jpg");
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+
+.flecha1-1 {
+    background-image: url("flecha1-1.png"),url("suelo.jpg");
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+
+.flecha01 {
+    background-image: url("flecha01.png"),url("suelo.jpg");
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+
+.flecha10 {
+    background-image: url("flecha10.png"),url("suelo.jpg");
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+
+.flecha11 {
+    background-image: url("flecha11.png"),url("suelo.jpg");
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+
+
+td {
+    border: 1px solid #000;
+    width: calc(100% / var(--nColumnas));
+    height: calc(100% / var(--nFilas));
+    max-width: 100%;
+    max-height: 100%; 
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#tabla {
+    min-width: 800px;
+    min-height: 800px;
+    max-width: 800px;
+    max-height: 800px;
+    margin: auto;
+}
+
+
+

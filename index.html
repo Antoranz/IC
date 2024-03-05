@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuentra tu camino</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="./style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container text-center">
+        <div class="mt-2 form-group">
+            <label for="nColumnas">Columnas:</label>
+            <input id="nColumnas" type="number">
+        </div>
+        <div class="mt-2 form-group">
+            <label for="nFilas">Filas:</label>
+            <input id="nFilas" type="number">
+        </div>
+        <button class="btn btn-primary m-2" id="boton"> Submit</button>
+        
+        <div id="play"></div>
+        <table class="table col-md-6 border border-black table-responsive"  id="tabla">
+
+        </table>
+        
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="optionModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Seleccionar Opción</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <button class="btn btn-primary option" data-option="start">Punto de inicio</button>
+                    <button class="btn btn-primary option" data-option="end">Punto de fin</button>
+                    <button class="btn btn-primary option" data-option="obstaculo">Obstáculo</button>
+                    <button class="btn btn-primary option" data-option="suelo">Normal</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="./script.js"></script>
+</body>
+</html>
