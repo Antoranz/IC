@@ -1,3 +1,12 @@
+//variables
+let inicio;
+let fin = [];
+let currFin = 0;
+let nFilas = 0;
+let nColumnas = 0;
+var caminoFinal;
+var minLength = 1000000000000000;
+
 class Nodo {
   constructor(x, y, g, h, predecesor) {
     this.x = x;
@@ -50,22 +59,19 @@ function calcularDistancia(x, y, fin) {
 }
 
 
-var caminoFinal;
-var minLength = 1000000000000000;
 
 function pintarRecorridoGrafo(inicio, fin, nFilas, nColumnas) {
-  
   caminoFinal = null;
   minLength = 1000000000000000;
   let colaAbierta = new ColaPrioridad(compararPorPrioridad);
   let colaCerrada = new ColaPrioridad(compararPorPrioridad);
 
-  inicio = inicio.split(":").map(Number);
-  fin = [fin[0], fin[2]];
-
-  colaAbierta.push(new Nodo(inicio[0], inicio[1], 0, calcularDistancia(inicio[0], inicio[1], fin), null));
-
-  recorrerNodo(colaAbierta, colaCerrada, nFilas, nColumnas, fin);
+  if (inicio!=""&& inicio!=undefined && fin!="" && fin!=[]&& fin!=undefined) {
+    inicio = inicio.split(":").map(Number);
+    fin = fin.split(":").map(Number);
+    colaAbierta.push(new Nodo(inicio[0], inicio[1], 0, calcularDistancia(inicio[0], inicio[1], fin), null));
+    recorrerNodo(colaAbierta, colaCerrada, nFilas, nColumnas, fin);
+  }
 }
 
 function recorrerNodo(colaAbierta, colaCerrada, nFilas, nColumnas, fin) {
@@ -101,7 +107,6 @@ function recorrerNodo(colaAbierta, colaCerrada, nFilas, nColumnas, fin) {
 }
 
 
-
 function reconstruirCamino(nodo) {
   let camino = [];
   while (nodo !== null) {
@@ -120,15 +125,13 @@ function checkObstaculo(x,y){
   return $(pathId).hasClass("obstaculo");
 }
 
-function crearTablaConEjemplo(nFilas,nColumnas,inicio,fin,obstaculo) {
-
-  let currFin = 0;
+function crearTablaConEjemplo(nFilas,nColumnas,i,f,obstaculo) {
+  reset();
   const nFilasE = nFilas;
   const nColumnasE = nColumnas;
-  const inicioPos = inicio; // Posición de inicio
-  const finPos = fin; // Posiciones de fin
+  const inicioPos = i; // Posición de inicio
+  const finPos = f; // Posiciones de fin
   const obstaculosPos = obstaculo; // Posiciones de obstáculos
-
   let tabla = "";
   for (let r = 0; r < nFilasE; r++) {
     tabla += "<tr>";
@@ -159,7 +162,7 @@ function crearTablaConEjemplo(nFilas,nColumnas,inicio,fin,obstaculo) {
 
     $("#play").on("click", function(){
       pintarRecorridoGrafo(inicio,fin[currFin],nFilas,nColumnas);
-      currFin++;
+      if(fin.length > currFin+1) currFin++;     
       console.log(caminoFinal);
       if(caminoFinal != null){
       caminoFinal.forEach(function(e,index){
@@ -191,19 +194,22 @@ function crearTablaConEjemplo(nFilas,nColumnas,inicio,fin,obstaculo) {
       $('#optionModal').modal('show'); 
     });
 }
-
+function reset(){
+   //inicializacion
+   inicio="";
+   fin=[];
+   currFin = 0;
+   nFilas = $("#nFilas").val();
+   nColumnas = $("#nColumnas").val();
+   caminoFinal= [];
+   minLength = 1000000000000000;
+}
 
 $(document).ready(function(){
-  let inicio;
-  let fin = [];
-  let currFin = 0;
-  let nFilas = 0;
-  let nColumnas = 0;
+
 
   $("#boton").on("click",function(){
-    nFilas = $("#nFilas").val();
-    nColumnas = $("#nColumnas").val();
-    
+    reset(); 
     let filas="";
     for(let r=0; r<nFilas; r++){
       filas+= "<tr>";
@@ -218,27 +224,30 @@ $(document).ready(function(){
     $("#play").html($play);
 
     $("#play").on("click", function(){
-      pintarRecorridoGrafo(inicio,fin[currFin],nFilas,nColumnas);
-      currFin++;
-      console.log(caminoFinal);
-      if(caminoFinal != null){
-      caminoFinal.forEach(function(e,index){
-        console.log(e);
-        if(index != 0 && index != caminoFinal.length-1){
-          var lastMove = [];
-          lastMove[0] = prev[0] - e[0];
-          lastMove[1] = prev[1] - e[1];
-          const pathId = "#" +e[0]+ "\\:" +e[1];
-          $(pathId).removeClass("start end obstaculo").addClass("flecha"+(~~lastMove[0])+ "" + (~~lastMove[1]));
+      try {
+        pintarRecorridoGrafo(inicio,fin[currFin],nFilas,nColumnas);
+        if(fin.length > currFin+1) currFin++;
+        console.log(caminoFinal);
+        if(caminoFinal != null){
+        caminoFinal.forEach(function(e,index){
+          console.log(e);
+          if(index != 0 && index != caminoFinal.length-1){
+            var lastMove = [];
+            lastMove[0] = prev[0] - e[0];
+            lastMove[1] = prev[1] - e[1];
+            const pathId = "#" +e[0]+ "\\:" +e[1];
+            $(pathId).removeClass("start end obstaculo").addClass("flecha"+(~~lastMove[0])+ "" + (~~lastMove[1]));
+          }
+          prev = e;
+        })
+        inicio = fin[currFin-1];
         }
-        prev = e;
-      })
-      inicio = fin[currFin-1];
+        else{
+          alert("No se puede llegar al destino!")
+        }
+      } catch (error) {
+        alert("Error en la configuracion, Debe haber 1 inicio, y al menos 1 final");
       }
-      else{
-        alert("No se puede llegar al destino!")
-      }
-
     });
 
     $("#tabla").html(filas);
