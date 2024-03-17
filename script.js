@@ -61,7 +61,7 @@ function pintarRecorridoGrafo(inicio, fin, nFilas, nColumnas) {
   let colaCerrada = new ColaPrioridad(compararPorPrioridad);
 
   inicio = inicio.split(":").map(Number);
-  fin = fin.split(":").map(Number);
+  fin = [fin[0], fin[2]];
 
   colaAbierta.push(new Nodo(inicio[0], inicio[1], 0, calcularDistancia(inicio[0], inicio[1], fin), null));
 
@@ -83,24 +83,18 @@ function recorrerNodo(colaAbierta, colaCerrada, nFilas, nColumnas, fin) {
     if (nuevaX >= 0 && nuevaX < nColumnas && nuevaY >= 0 && nuevaY < nFilas &&
         !checkObstaculo(nuevaX, nuevaY) && !colaCerrada.contains(nodo)) {
       if (nodo.x === fin[0] && nodo.y === fin[1]) {
-        // Aquí has llegado al nodo final, puedes hacer lo que necesites con él
-        // Por ejemplo, reconstruir el camino óptimo hacia atrás
         reconstruirCamino(nodo);
-        return; // Finaliza la función recursiva
+        return; 
       }
       if (!colaAbierta.contains(nodo) || g < nodo.g) {
-        // Si la cola abierta no contiene el nodo o el nuevo camino es más corto,
-        // añade el nodo a la cola abierta y actualiza su prioridad.
         nodo.predecesor = nodoOptimo;
         colaAbierta.push(nodo);
       }
     }
   });
 
-  // Marcar el nodo actual como visitado (añadirlo a la cola cerrada)
   colaCerrada.push(nodoOptimo);
 
-  // Llamar recursivamente a recorrerNodo para continuar la búsqueda
   if (!colaAbierta.empty()) {
     recorrerNodo(colaAbierta, colaCerrada, nFilas, nColumnas, fin);
   }
@@ -109,15 +103,12 @@ function recorrerNodo(colaAbierta, colaCerrada, nFilas, nColumnas, fin) {
 
 
 function reconstruirCamino(nodo) {
-  // Aquí puedes reconstruir el camino óptimo utilizando los predecesores
-  // Recorre los predecesores desde el nodo final hasta el nodo inicial
-  // y realiza las operaciones necesarias (por ejemplo, marcar el camino en el mapa)
   let camino = [];
   while (nodo !== null) {
     camino.push([nodo.x, nodo.y]);
     nodo = nodo.predecesor;
   }
-  // Ahora tienes el camino óptimo en orden inverso, puedes revertirlo si es necesario
+  
   if(camino.length < minLength){
     caminoFinal = camino;
     minLength = caminoFinal.length;
@@ -128,7 +119,79 @@ function checkObstaculo(x,y){
   const pathId = "#" +x+ "\\:" +y;
   return $(pathId).hasClass("obstaculo");
 }
-// Resto del código...
+
+function crearTablaConEjemplo(nFilas,nColumnas,inicio,fin,obstaculo) {
+
+  let currFin = 0;
+  const nFilasE = nFilas;
+  const nColumnasE = nColumnas;
+  const inicioPos = inicio; // Posición de inicio
+  const finPos = fin; // Posiciones de fin
+  const obstaculosPos = obstaculo; // Posiciones de obstáculos
+
+  let tabla = "";
+  for (let r = 0; r < nFilasE; r++) {
+    tabla += "<tr>";
+    for (let c = 0; c < nColumnasE; c++) {
+      let clase = "suelo";
+      if (inicioPos[0] === r && inicioPos[1] === c) {
+        clase = "start";
+        inicio = r + ":" + c;
+      } else if (finPos.some(posicion => posicion[0] === r && posicion[1] === c)) {
+        clase = "end";
+        let aux = "";
+        aux = r + ":" + c;
+        console.log(aux)
+        fin.push(aux);
+      } else if (obstaculosPos.some(posicion => posicion[0] === r && posicion[1] === c)) {
+        clase = "obstaculo";
+      }
+      tabla += `<td id="${r}:${c}" class="${clase}"></td>`;
+    }
+    tabla += "</tr>";
+  }
+
+  $("#tabla").html(tabla);
+
+  let $play = `<button class="btn btn-primary">Start</button>`
+    
+    $("#play").html($play);
+
+    $("#play").on("click", function(){
+      pintarRecorridoGrafo(inicio,fin[currFin],nFilas,nColumnas);
+      currFin++;
+      console.log(caminoFinal);
+      if(caminoFinal != null){
+      caminoFinal.forEach(function(e,index){
+        console.log(e);
+        if(index != 0 && index != caminoFinal.length-1){
+          var lastMove = [];
+          lastMove[0] = prev[0] - e[0];
+          lastMove[1] = prev[1] - e[1];
+          const pathId = "#" +e[0]+ "\\:" +e[1];
+          $(pathId).removeClass("start end obstaculo").addClass("flecha"+(~~lastMove[0])+ "" + (~~lastMove[1]));
+        }
+        prev = e;
+      })
+      inicio = fin[currFin-1];
+      }
+      else{
+        alert("No se puede llegar al destino!")
+      }
+
+    });
+
+    $("#tabla").html(tabla);
+
+    document.documentElement.style.setProperty('--nFilas', nFilas);
+    document.documentElement.style.setProperty('--nColumnas', nColumnas);
+
+    $("td").click(function() {
+      selectedCell = $(this);
+      $('#optionModal').modal('show'); 
+    });
+}
+
 
 $(document).ready(function(){
   let inicio;
@@ -180,18 +243,15 @@ $(document).ready(function(){
 
     $("#tabla").html(filas);
 
-    // Establecer variables CSS personalizadas
     document.documentElement.style.setProperty('--nFilas', nFilas);
     document.documentElement.style.setProperty('--nColumnas', nColumnas);
 
-    // Asignar evento de clic a cada celda
     $("td").click(function() {
       selectedCell = $(this);
-      $('#optionModal').modal('show'); // Mostrar el modal cuando se hace clic en una celda
+      $('#optionModal').modal('show'); 
     });
   });
 
-    // Manejar la selección de opción del modal
     $(".option").click(function() {
       const option = $(this).data("option");
       selectedCell.removeClass("start end obstaculo suelo").addClass(option);
@@ -206,8 +266,13 @@ $(document).ready(function(){
           break;
       }
       
-      $('#optionModal').modal('hide'); // Ocultar el modal después de seleccionar una opción
+      $('#optionModal').modal('hide'); 
     });
+
+  $("#crearTablaConEjemplo").on("click", function(){
+    crearTablaConEjemplo(10,10,[0,0],[[2, 5], [7, 7]],[[0, 2], [1, 2], [2, 2],[3, 2],[4, 2],[5, 2],[3,0],[5,1]]);
+  });
+
 
   });
 
