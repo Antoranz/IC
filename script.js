@@ -277,7 +277,6 @@ $(document).ready(function(){
 
 var dropdownContent = document.querySelector('.dropdown-menu');
 
-// Agregar manejadores de clic a los elementos del dropdown para llamar a la función correspondiente
 var examples = document.querySelectorAll('.dropdown-menu .dropdown-item');
 examples.forEach(function(example, index) {
   example.addEventListener('click', function() {
@@ -304,7 +303,7 @@ examples.forEach(function(example, index) {
         crearTablaConEjemplo(10, 10, [0, 0], [[9, 9]], [[4, 4], [4, 6], [6, 4], [6, 5], [6, 6], [5, 6], [5, 5], [0, 4], [1, 4], [3, 4], [4, 0], [4, 1], [4, 2], [4, 3], [4, 7], [4, 8], [4, 9], [5, 0], [6, 0], [6, 1], [6, 2], [6, 8], [6, 9], [5, 8], [4, 8], [8, 4], [9, 4]]);
         break;
     }
-    dropdownContent.classList.remove('show'); // Ocultar el dropdown después de hacer clic en un elemento
+    dropdownContent.classList.remove('show');
   });
 });
 
