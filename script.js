@@ -156,33 +156,33 @@ function crearTablaConEjemplo(nFilas,nColumnas,i,f,obstaculo) {
 
   $("#tabla").html(tabla);
 
-  let $play = `<button class="btn btn-primary">Start</button>`
-    
-    $("#play").html($play);
-
-    $("#play").on("click", function(){
-      pintarRecorridoGrafo(inicio,fin[currFin],nFilas,nColumnas);
-      if(fin.length > currFin+1) currFin++;     
-      console.log(caminoFinal);
-      if(caminoFinal != null){
-      caminoFinal.forEach(function(e,index){
+  let $play = $('<button class="btn btn-primary m-2">Start</button>');
+  $play.on("click", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    pintarRecorridoGrafo(inicio, fin[currFin], nFilas, nColumnas);
+    if (fin.length > currFin + 1) currFin++;
+    console.log(caminoFinal);
+    if (caminoFinal != null) {
+      caminoFinal.forEach(function(e, index) {
         console.log(e);
-        if(index != 0 && index != caminoFinal.length-1){
+        if (index != 0 && index != caminoFinal.length - 1) {
           var lastMove = [];
           lastMove[0] = prev[0] - e[0];
           lastMove[1] = prev[1] - e[1];
-          const pathId = "#" +e[0]+ "\\:" +e[1];
-          $(pathId).removeClass("start end obstaculo").addClass("flecha"+(~~lastMove[0])+ "" + (~~lastMove[1]));
+          const pathId = "#" + e[0] + "\\:" + e[1];
+          $(pathId).removeClass("start end obstaculo").addClass("flecha" + (~~lastMove[0]) + "" + (~~lastMove[1]));
         }
         prev = e;
-      })
-      inicio = fin[currFin-1];
-      }
-      else{
-        alert("No se puede llegar al destino!")
-      }
-
-    });    
+      });
+      inicio = fin[currFin - 1];
+    } else {
+      alert("No se puede llegar al destino!");
+    }
+  });
+  
+  $("#play").html($play);
+    
     document.documentElement.style.setProperty('--nFilas', nFilas);
     document.documentElement.style.setProperty('--nColumnas', nColumnas);
 
@@ -275,15 +275,38 @@ $(document).ready(function(){
       $('#optionModal').modal('hide'); 
     });
 
-  $("#crearTablaConEjemplo").on("click", function(){
-    //crearTablaConEjemplo(10,10,[0,0],[[2, 5], [7, 7]],[[0, 2], [1, 2], [2, 2],[3, 2],[4, 2],[5, 2],[3,0],[5,1]]);
-    //crearTablaConEjemplo(11,11,[0,0],[[0, 10]],[[0, 1], [1, 1], [2, 1],[3, 1],[4, 1],[5,1],[6, 1],[7,1],[8,1], [1, 3], [2, 3],[3, 3],[4, 3],[5,3],[6, 3],[7,3],[8,3],[9,3],[10,3],[0, 5], [1, 5], [2, 5],[3, 5],[4, 5],[5,5],[6, 5],[7,5],[8,5],[9,5], [1, 7], [2, 7],[3, 7],[4, 7],[5,7],[6, 7],[7,7],[8,7],[9,7],[10,7],[0, 9], [1, 9], [2, 9],[3, 9],[4, 9],[5,9],[6, 9],[7,9],[8,9],[9,9]]);
-    //crearTablaConEjemplo(5,5, [0,0],[[4,4]],[[0,1],[1,0],[1,1]]);
-    //crearTablaConEjemplo(8, 8, [0, 0], [[7, 7]], [[1, 1], [3, 1], [5, 1], [7, 1], [1, 3], [3, 3], [5, 3], [7, 3], [1, 5], [3, 5], [5, 5], [7, 5], [1, 7], [3, 7], [5, 7], [7, 7]]);
-    //crearTablaConEjemplo(10, 10, [5, 0], [[5,9]], [[1, 1], [1, 8], [2, 1], [2, 8], [3, 1], [3, 8], [4, 1], [4, 8], [5, 1], [5, 8], [6, 1], [6, 8], [7, 1], [7, 8], [8, 1], [8, 8], [2, 1], [2, 8], [3, 1], [3, 8], [4, 1], [4, 8], [5, 1], [5, 8], [6, 1], [6, 8], [7, 1], [7, 8], [3, 1], [3, 8], [4, 1], [4, 8], [5, 1], [5, 8], [6, 1], [6, 8], [4, 1], [4, 8], [5, 1], [5, 8], [5, 1], [5, 8]]);
-    //crearTablaConEjemplo(8, 8, [0, 0], [[7, 7]], [[1, 3], [1, 4], [1, 5], [2, 2], [2, 3], [2, 5], [2, 6], [3, 1], [3, 2], [3, 6], [3, 7], [4, 1], [4, 7], [5, 1], [5, 7], [6, 2], [6, 3], [6, 5], [6, 6], [7, 3], [7, 4], [7, 5]]);
-    crearTablaConEjemplo(10, 10, [0, 0], [[9, 9]], [[4, 4], [4, 6], [6, 4], [6, 5], [6, 6], [5, 6], [5, 5], [0, 4], [1, 4], [3, 4], [4, 0], [4, 1], [4, 2], [4, 3], [4, 7], [4, 8], [4, 9], [5, 0], [6, 0], [6, 1], [6, 2], [6, 8], [6, 9], [5, 8], [4, 8], [8, 4], [9, 4]]);
+var dropdownContent = document.querySelector('.dropdown-menu');
+
+// Agregar manejadores de clic a los elementos del dropdown para llamar a la función correspondiente
+var examples = document.querySelectorAll('.dropdown-menu .dropdown-item');
+examples.forEach(function(example, index) {
+  example.addEventListener('click', function() {
+    switch(index) {
+      case 0:
+        crearTablaConEjemplo(10,10,[0,0],[[2, 5], [7, 7]],[[0, 2], [1, 2], [2, 2],[3, 2],[4, 2],[5, 2],[3,0],[5,1]]);
+        break;
+      case 1:
+        crearTablaConEjemplo(11,11,[0,0],[[0, 10]],[[0, 1], [1, 1], [2, 1],[3, 1],[4, 1],[5,1],[6, 1],[7,1],[8,1], [1, 3], [2, 3],[3, 3],[4, 3],[5,3],[6, 3],[7,3],[8,3],[9,3],[10,3],[0, 5], [1, 5], [2, 5],[3, 5],[4, 5],[5,5],[6, 5],[7,5],[8,5],[9,5], [1, 7], [2, 7],[3, 7],[4, 7],[5,7],[6, 7],[7,7],[8,7],[9,7],[10,7],[0, 9], [1, 9], [2, 9],[3, 9],[4, 9],[5,9],[6, 9],[7,9],[8,9],[9,9]]);
+        break;
+      case 2:
+        crearTablaConEjemplo(5,5, [0,0],[[4,4]],[[0,1],[1,0],[1,1]]);
+        break;
+      case 3:
+        crearTablaConEjemplo(8, 8, [0, 0], [[7, 7]], [[1, 1], [3, 1], [5, 1], [7, 1], [1, 3], [3, 3], [5, 3], [7, 3], [1, 5], [3, 5], [5, 5], [7, 5], [1, 7], [3, 7], [5, 7], [7, 7]]);
+        break;
+      case 4:
+        crearTablaConEjemplo(10, 10, [5, 0], [[5,9]], [[1, 1], [1, 8], [2, 1], [2, 8], [3, 1], [3, 8], [4, 1], [4, 8], [5, 1], [5, 8], [6, 1], [6, 8], [7, 1], [7, 8], [8, 1], [8, 8], [2, 1], [2, 8], [3, 1], [3, 8], [4, 1], [4, 8], [5, 1], [5, 8], [6, 1], [6, 8], [7, 1], [7, 8], [3, 1], [3, 8], [4, 1], [4, 8], [5, 1], [5, 8], [6, 1], [6, 8], [4, 1], [4, 8], [5, 1], [5, 8], [5, 1], [5, 8]]);
+        break;
+      case 5:
+        crearTablaConEjemplo(8, 8, [0, 0], [[7, 7]], [[1, 3], [1, 4], [1, 5], [2, 2], [2, 3], [2, 5], [2, 6], [3, 1], [3, 2], [3, 6], [3, 7], [4, 1], [4, 7], [5, 1], [5, 7], [6, 2], [6, 3], [6, 5], [6, 6], [7, 3], [7, 4], [7, 5]]);
+        break;
+      case 6:
+        crearTablaConEjemplo(10, 10, [0, 0], [[9, 9]], [[4, 4], [4, 6], [6, 4], [6, 5], [6, 6], [5, 6], [5, 5], [0, 4], [1, 4], [3, 4], [4, 0], [4, 1], [4, 2], [4, 3], [4, 7], [4, 8], [4, 9], [5, 0], [6, 0], [6, 1], [6, 2], [6, 8], [6, 9], [5, 8], [4, 8], [8, 4], [9, 4]]);
+        break;
+    }
+    dropdownContent.classList.remove('show'); // Ocultar el dropdown después de hacer clic en un elemento
   });
+});
 
 
 });
