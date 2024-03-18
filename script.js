@@ -144,7 +144,6 @@ function crearTablaConEjemplo(nFilas,nColumnas,i,f,obstaculo) {
         clase = "end";
         let aux = "";
         aux = r + ":" + c;
-        console.log(aux)
         fin.push(aux);
       } else if (obstaculosPos.some(posicion => posicion[0] === r && posicion[1] === c)) {
         clase = "obstaculo";
@@ -162,10 +161,8 @@ function crearTablaConEjemplo(nFilas,nColumnas,i,f,obstaculo) {
     event.stopPropagation();
     pintarRecorridoGrafo(inicio, fin[currFin], nFilas, nColumnas);
     if (fin.length > currFin + 1) currFin++;
-    console.log(caminoFinal);
     if (caminoFinal != null) {
       caminoFinal.forEach(function(e, index) {
-        console.log(e);
         if (index != 0 && index != caminoFinal.length - 1) {
           var lastMove = [];
           lastMove[0] = prev[0] - e[0];
@@ -203,8 +200,6 @@ function reset(){
 }
 
 $(document).ready(function(){
-
-
   $("#boton").on("click",function(){
     reset(); 
     let filas="";
@@ -215,37 +210,34 @@ $(document).ready(function(){
       }
       filas+= "</tr>";
     }
-
-    let $play = `<button class="btn btn-primary">Start</button>`
-    
-    $("#play").html($play);
-
-    $("#play").on("click", function(){
-      try {
-        pintarRecorridoGrafo(inicio,fin[currFin],nFilas,nColumnas);
-        if(fin.length > currFin+1) currFin++;
-        console.log(caminoFinal);
-        if(caminoFinal != null){
-        caminoFinal.forEach(function(e,index){
-          console.log(e);
-          if(index != 0 && index != caminoFinal.length-1){
-            var lastMove = [];
-            lastMove[0] = prev[0] - e[0];
-            lastMove[1] = prev[1] - e[1];
-            const pathId = "#" +e[0]+ "\\:" +e[1];
-            $(pathId).removeClass("start end obstaculo").addClass("flecha"+(~~lastMove[0])+ "" + (~~lastMove[1]));
-          }
-          prev = e;
-        })
-        inicio = fin[currFin-1];
+    let $play = $('<button class="btn btn-primary m-2">Start</button>');
+    $play.on("click", function(event) {
+      try{
+        event.preventDefault();
+        event.stopPropagation();
+        pintarRecorridoGrafo(inicio, fin[currFin], nFilas, nColumnas);
+        if (fin.length > currFin + 1) currFin++;
+        if (caminoFinal != null) {
+          caminoFinal.forEach(function(e, index) {
+            if (index != 0 && index != caminoFinal.length - 1) {
+              var lastMove = [];
+              lastMove[0] = prev[0] - e[0];
+              lastMove[1] = prev[1] - e[1];
+              const pathId = "#" + e[0] + "\\:" + e[1];
+              $(pathId).removeClass("start end obstaculo").addClass("flecha" + (~~lastMove[0]) + "" + (~~lastMove[1]));
+            }
+            prev = e;
+          });
+          inicio = fin[currFin - 1];
+        } else {
+          alert("No se puede llegar al destino!");
         }
-        else{
-          alert("No se puede llegar al destino!")
-        }
-      } catch (error) {
-        alert("Error en la configuracion, Debe haber 1 inicio, y al menos 1 final");
+      }catch(e){
+        console.log("Error:",e);
+        alert("Configuracion incorrecta");
       }
-    });
+    });  
+    $("#play").html($play);
 
     $("#tabla").html(filas);
 
@@ -264,11 +256,9 @@ $(document).ready(function(){
       switch(option){
         case "start":
           inicio = selectedCell.attr('id');
-          console.log(inicio);
           break;
         case "end":
           fin.push(selectedCell.attr('id'));
-          console.log(fin);
           break;
       }
       
