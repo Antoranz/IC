@@ -6,6 +6,10 @@
     background-image: url("./dinamita.jpg");
     background-size: cover;
 }
+.penalizacion{
+    background-image: url("./penalizacion.jpg");
+    background-size: cover;
+}
 .end{
     background-image: url("./diamond.jpg");
     background-size: cover;

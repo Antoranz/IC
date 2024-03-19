@@ -88,6 +88,10 @@ function recorrerNodo(colaAbierta, colaCerrada, nFilas, nColumnas, fin) {
 
     if (nuevaX >= 0 && nuevaX < nColumnas && nuevaY >= 0 && nuevaY < nFilas &&
         !checkObstaculo(nuevaX, nuevaY) && !colaCerrada.contains(nodo)) {
+
+      if (checkPenalizacion(nuevaX, nuevaY)) {
+        h += 1;
+      }
       if (nodo.x === fin[0] && nodo.y === fin[1]) {
         reconstruirCamino(nodo);
         return; 
@@ -109,20 +113,28 @@ function recorrerNodo(colaAbierta, colaCerrada, nFilas, nColumnas, fin) {
 
 function reconstruirCamino(nodo) {
   let camino = [];
+  let distanciaActual = 0;
+  distanciaActual += nodo.h;
+  console.log(nodo.h)
   while (nodo !== null) {
     camino.push([nodo.x, nodo.y]);
     nodo = nodo.predecesor;
   }
   
-  if(camino.length < minLength){
+  if(distanciaActual < minLength){
     caminoFinal = camino;
-    minLength = caminoFinal.length;
+    minLength = distanciaActual;
   }
 }
 
 function checkObstaculo(x,y){
   const pathId = "#" +x+ "\\:" +y;
   return $(pathId).hasClass("obstaculo");
+}
+
+function checkPenalizacion(x,y){
+  const pathId = "#" +x+ "\\:" +y;
+  return $(pathId).hasClass("penalizacion");
 }
 
 function crearTablaConEjemplo(nFilas,nColumnas,i,f,obstaculo) {
@@ -168,7 +180,7 @@ function crearTablaConEjemplo(nFilas,nColumnas,i,f,obstaculo) {
           lastMove[0] = prev[0] - e[0];
           lastMove[1] = prev[1] - e[1];
           const pathId = "#" + e[0] + "\\:" + e[1];
-          $(pathId).removeClass("start end obstaculo").addClass("flecha" + (~~lastMove[0]) + "" + (~~lastMove[1]));
+          $(pathId).removeClass("start end obstaculo penalizacion").addClass("flecha" + (~~lastMove[0]) + "" + (~~lastMove[1]));
         }
         prev = e;
       });
