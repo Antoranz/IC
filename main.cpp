@@ -3,9 +3,28 @@
 #include <cstdlib>
 #include <vector>
 #include <string>
+#include <map>
+
+
 #define ATRIBUTOS_FILE "AtributosJuego.txt"
 #define JUEGO_FILE "Juego.txt"
+
 using namespace std;
+
+struct var{
+    int p;
+    int n;
+    int a;
+    int r;
+
+    var(int p, int n, int a, int r) {
+        this->p = p;
+        this->n = n;
+        this->a = a;
+        this->r = r;
+
+    }
+};
 
 vector<string> split(string str, char pattern) {
 
@@ -25,9 +44,9 @@ vector<string> split(string str, char pattern) {
 }
 
 
- void cargarDatos(){
+void cargarDatos(vector<vector<string>> &v){
 
-     int tama�o = 20;
+     int tamaño = 20;
 
 
      ifstream ficheroAtrib;
@@ -42,7 +61,7 @@ vector<string> split(string str, char pattern) {
          ficheroAtrib.close();
          for (int k = 0; k < auxVector.size(); k++) {
              cout << auxVector[k];
-             for (int z = 0; z < tama�o - auxVector[k].length(); z++) {
+             for (int z = 0; z < tamaño - auxVector[k].length(); z++) {
                  cout << " ";
              }
              cout << "|";
@@ -56,7 +75,6 @@ vector<string> split(string str, char pattern) {
     fichero.open(JUEGO_FILE);
     if (fichero.is_open()) {
         string aux;
-        vector<vector<string>> v;
         while (!fichero.eof()) {
             vector<string> auxVector;
             fichero >> aux;
@@ -64,23 +82,46 @@ vector<string> split(string str, char pattern) {
             v.push_back(auxVector);
         }
         fichero.close();
-        
-        for (int i = 0; i < v.size(); i++) {
-            for (int j = 0; j < v[i].size(); j++) {
-                cout << "" << v[i][j];
-                for (int z = 0; z < tama�o - v[i][j].length(); z++) {
-                    cout << " ";
-                }
-                cout << "|";
-            }
-            cout << "\n";
-        }
+       
     }
-    
+
  }
 
+void escribeMatriz(vector<vector<string>> v, int tamaño) {
+    for (int i = 0; i < v.size(); i++) {
+        for (int j = 0; j < v[i].size(); j++) {
+            cout << "" << v[i][j];
+            for (int z = 0; z < tamaño - v[i][j].length(); z++) {
+                cout << " ";
+            }
+            cout << "|";
+        }
+        cout << "\n";
+    }
+}
+
+void crearMapaDatos(vector<map<string, var>>& mapas, vector<vector<string>>& datos) {
+    cout << ":::::::::::::::::::::::" << "\n";
+    
+    for (int i = 0; i < datos[0].size(); i++) {
+        for (int j = 0; j < datos.size(); j++) {
+            auto curr = mapas[j].find(datos[j][i]);
+            if (curr == mapas[j].end()) {
+                mapas[j].insert(make_pair(datos[j][i], var()));
+            }
+            cout << datos[j][i];
+        }
+    }
+}
+
 int main(){
-    cargarDatos();
+
+    vector<vector<string>> datos;
+    cargarDatos(datos);
+    escribeMatriz(datos, 20);
+    vector<map<string, var>> mapas(datos.size());
+
+    crearMapaDatos(mapas, datos);
     return 0;
  }
 
